@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IikanSwap — Ammora SDK Exchange on GIWA Sepolia</title>
+    <meta
+      name="description"
+      content="A minimal exchange built with the Ammora SDK (@ammora-protocol/sdk): swap ETH <-> tAMM on the live Ammora pool on GIWA Sepolia testnet, plus live launchpad discovery."
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div>
+          <h1>IikanSwap</h1>
+          <p class="sub">
+            A minimal exchange built with the
+            <a href="https://www.npmjs.com/package/@ammora-protocol/sdk" target="_blank" rel="noreferrer"
+              >Ammora SDK</a
+            >
+            on GIWA Sepolia testnet
+          </p>
+        </div>
+        <div class="net-badge" id="netBadge">GIWA Sepolia &middot; chain 91342 &middot; testnet</div>
+      </header>
+
+      <section class="card" id="walletCard">
+        <div class="row between">
+          <strong>Wallet</strong>
+          <button id="connectBtn" class="btn">Connect wallet</button>
+        </div>
+        <p class="muted" id="walletStatus">
+          Not connected. Quoting works without a wallet; swapping needs MetaMask / Rabby on GIWA
+          Sepolia.
+        </p>
+        <p class="muted mono" id="balances" hidden></p>
+      </section>
+
+      <nav class="tabs">
+        <button id="tabSwap" class="tab active">Swap</button>
+        <button id="tabLaunches" class="tab">Launches</button>
+      </nav>
+
+      <section class="card" id="swapPanel">
+        <div class="row between">
+          <h2>Swap ETH &harr; tAMM</h2>
+          <button id="flipBtn" class="btn ghost" title="Flip direction">&#8646; flip</button>
+        </div>
+        <p class="muted">
+          Live pool: <span class="mono" id="poolAddr"></span> &middot; router
+          <span class="mono" id="routerAddr"></span>
+        </p>
+
+        <label class="field">
+          <span id="inLabel">You pay (ETH)</span>
+          <input id="amountIn" type="number" min="0" step="any" placeholder="0.001" value="0.001" />
+        </label>
+        <p class="muted mono" id="balanceLine"></p>
+
+        <div class="quote" id="quoteBox">
+          <div class="row between"><span>You receive (est.)</span><strong id="quoteOut">&mdash;</strong></div>
+          <div class="row between"><span>Price</span><span id="quotePrice">&mdash;</span></div>
+          <div class="row between"><span>Minimum received (1% slippage)</span><span id="quoteMin">&mdash;</span></div>
+          <div class="row between"><span>Route</span><span id="quoteRoute">tAMM/ETH pool &middot; SDK calldata</span></div>
+        </div>
+        <p class="muted" id="quoteStatus">Fetching live quote&hellip;</p>
+
+        <button id="approveBtn" class="btn wide" hidden>Approve tAMM</button>
+        <button id="swapBtn" class="btn primary wide" disabled>Connect wallet to swap</button>
+        <p class="muted" id="txStatus"></p>
+      </section>
+
+      <section class="card" id="launchesPanel" hidden>
+        <div class="row between">
+          <h2>Live launches on GIWA Sepolia</h2>
+          <button id="refreshLaunches" class="btn ghost">Refresh</button>
+        </div>
+        <p class="muted">
+          Discovered through the SDK&rsquo;s <span class="mono">AmmoraDataApiClient.getLaunches()</span>.
+          Launches are dynamic data indexed by Ammora &mdash; creating a token does not require
+          republishing the SDK.
+        </p>
+        <p class="muted" id="launchesStatus">Loading&hellip;</p>
+        <ul id="launchesList" class="launches"></ul>
+      </section>
+
+      <section class="card">
+        <h2>Pool &amp; contracts</h2>
+        <ul class="contracts">
+          <li>tAMM token <a class="mono" id="linkToken" target="_blank" rel="noreferrer"></a></li>
+          <li>tAMM/ETH pool <a class="mono" id="linkPool" target="_blank" rel="noreferrer"></a></li>
+          <li>Native router <a class="mono" id="linkRouter" target="_blank" rel="noreferrer"></a></li>
+          <li>Vault <a class="mono" id="linkVault" target="_blank" rel="noreferrer"></a></li>
+          <li>Staking <a class="mono" id="linkStaking" target="_blank" rel="noreferrer"></a></li>
+        </ul>
+        <p class="muted">
+          1 ETH &asymp; <strong id="oneEthQuote">&mdash;</strong> tAMM right now (live pool quote).
+        </p>
+      </section>
+
+      <footer class="muted">
+        <p>
+          Built with <span class="mono">@ammora-protocol/sdk 0.3.9</span> +
+          <span class="mono">viem</span>. Swap calldata is built by the SDK
+          (<span class="mono">buildV3NativePoolExactInput</span> /
+          <span class="mono">buildV3PoolExactInputForNative</span>); quotes come from the pool&rsquo;s
+          own quote view, the same one Ammora&rsquo;s site uses. Testnet only &mdash; no real funds.
+          Research notes:
+          <a href="https://github.com/aldozz189/ammora-sdk-swap-demo/blob/main/RESEARCH.md" target="_blank" rel="noreferrer">RESEARCH.md</a>.
+        </p>
+        <p>
+          Ammora is beta testnet software and has not announced a mainnet deployment or completed
+          an independent security audit. Do not use with real funds.
+        </p>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
